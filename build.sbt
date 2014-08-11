@@ -14,7 +14,8 @@ resolvers ++= Seq(
 
 libraryDependencies ++= Seq(
   "com.roundeights" %% "hasher" % "1.0.0",
-  "mysql" % "mysql-connector-java" % "5.1.18"
+  "mysql" % "mysql-connector-java" % "5.1.18",
+  "postgresql" % "postgresql" % "9.1-901.jdbc4"
 )
 
 
