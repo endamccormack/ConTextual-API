@@ -6,6 +6,7 @@ import play.api.Logger
 import play.api.db.DB
 import anorm._
 import play.api.Play.current
+import play.api.libs.json._
 
 
 /**
@@ -51,6 +52,19 @@ object User{
         }
   }
 
+  def findSingle(emailAddress:String):User = {
+    DB.withConnection{ implicit connection =>
+      SQL("select * from User where EmailAddress = '" + emailAddress + "'").as(User.simple *)
+    }.head
+  }
+
+  def deleteSingle(emailAddress:String): Int = {
+    DB.withConnection{ implicit connection =>
+      val nRowsDeleted = SQL("delete from User where EmailAddress = {email}").on('email -> emailAddress).executeUpdate()
+      nRowsDeleted
+    }
+  }
+
   def findAll():Seq[User] = {
     DB.withConnection{ implicit connection =>
       SQL("select * from User").as(User.simple *)
@@ -72,5 +86,35 @@ object User{
     }
     Logger.info("Insert into User table with id of " + id.toString())
     id
+  }
+
+  implicit object TransactionFormat extends Format[User] {
+
+    // convert from Transaction object to JSON (serializing to JSON)
+    def writes(user: User): JsValue = {
+      val accountSeq = Seq(
+        "EmailAddress"    -> JsString(user.EmailAddress.get),
+        "FirstName"       -> JsString(user.FirstName.getOrElse("Unknown")),
+        "LastName"        -> JsString(user.LastName.getOrElse("Unknown")),
+        "JobTitle"        -> JsString(user.JobTitle.getOrElse("Unknown")),
+        "Role"            -> JsString(user.Role.getOrElse("Unknown")),
+        "Account_id"      -> JsNumber(user.Account_id),
+        "password"        -> JsString(user.password)
+      )
+      JsObject(accountSeq)
+    }
+
+    // convert from a JSON string to a Transaction object (de-serializing from JSON)
+    def reads(json: JsValue): JsResult[User] = {
+      val EmailAddress = (json \ "EmailAddress").as[String]
+      val FirstName = (json \ "FirstName").as[String]
+      val LastName = (json \ "LastName").as[String]
+      val JobTitle = (json \ "JobTitle").as[String]
+      val Role = (json \ "Role").as[String]
+      val Account_id = (json \ "Account_id").as[Long]
+      val password = (json \ "password").as[String]
+
+      JsSuccess(User(anorm.Id(EmailAddress), Some(FirstName), Some(LastName), Some(JobTitle), Some(Role), Account_id, password ))
+    }
   }
 }

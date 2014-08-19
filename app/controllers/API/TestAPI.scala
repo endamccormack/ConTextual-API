@@ -40,14 +40,14 @@ object TestAPI extends Controller{
 
 
     /* user test (depends on account) */
-    val password = "1Password2"
-    val dasha256 = password.sha256
-    val newTest = models.User(anorm.Id("Enda@gmail.com"), Some("Enda"), Some("McCormack"), Some("Helicopter"), Some("admin"), 1, dasha256)
-    val id = models.User.insert(newTest)
+//    val password = "1Password2"
+//    val dasha256 = password.sha256
+//    val newTest = models.User(anorm.Id("Enda@gmail.com"), Some("Enda"), Some("McCormack"), Some("Helicopter"), Some("admin"), 1, dasha256)
+//    val id = models.User.insert(newTest)
 
     //account test
-//    val newTest = models.Account(anorm.NotAssigned, "EndaCorp")
-//    val id = models.Account.insert(newTest)
+    val newTest = models.Account(anorm.NotAssigned, "EndaCorp")
+    val id = models.Account.insert(newTest)
 
     id match {
       case Some(autoIncrementId) =>

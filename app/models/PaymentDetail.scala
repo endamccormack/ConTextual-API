@@ -5,6 +5,7 @@ import anorm.SqlParser._
 import play.api.Logger
 import play.api.db.DB
 import play.api.Play.current
+import play.api.libs.json._
 
 /**
  * Created by endamccormack.
@@ -56,6 +57,24 @@ object PaymentDetail{
     }
   }
 
+  def findAllForAccount(account_id:Long):Seq[PaymentDetail] = {
+    DB.withConnection{ implicit connection =>
+      SQL("select * from PaymentDetail where account_id =" + account_id).as(PaymentDetail.simple *)
+    }
+  }
+
+  def findSingle(id:Long):PaymentDetail = {
+    DB.withConnection{ implicit connection =>
+      SQL("select * from PaymentDetail where id = '" + id + "'").as(PaymentDetail.simple *)
+    }.head
+  }
+
+  def deleteSingle(id:Long):Int = {
+    DB.withConnection{ implicit connection =>
+      SQL("delete from PaymentDetail where id = '" + id + "'").executeUpdate()
+    }
+  }
+
   def insert(paymentDetail: PaymentDetail): Option[Long] = {
     val id: Option[Long] = DB.withConnection { implicit connection =>
       SQL("insert into PaymentDetail(CardNumber, ExpiryDate, CardHolderName, CSV, CardType, Account_id) " +
@@ -70,5 +89,42 @@ object PaymentDetail{
     }
     Logger.info("Insert into PaymentDetail table with id of " + id.toString())
     id
+  }
+
+  implicit object TransactionFormat extends Format[PaymentDetail] {
+
+//    get[Pk[Long]]("id") ~
+//      get[String]("CardNumber") ~
+//      get[String]("ExpiryDate") ~
+//      get[String]("CardHolderName") ~
+//      get[Option[String]]("CSV") ~
+//      get[String]("CardType") ~
+//      get[Long]("Account_id")
+    // convert from Transaction object to JSON (serializing to JSON)
+    def writes(paymentDetail: PaymentDetail): JsValue = {
+      val accountSeq = Seq(
+        "id"              -> JsNumber(paymentDetail.id.get),
+        "CardNumber"      -> JsString(paymentDetail.CardNumber),
+        "ExpiryDate"      -> JsString(paymentDetail.ExpiryDate),
+        "CardHolderName"  -> JsString(paymentDetail.CardHolderName),
+        "CSV"             -> JsString(paymentDetail.CSV.getOrElse("")),
+        "CardType"        -> JsString(paymentDetail.CardType),
+        "Account_id"      -> JsNumber(paymentDetail.Account_id)
+      )
+      JsObject(accountSeq)
+    }
+
+    // convert from a JSON string to a Transaction object (de-serializing from JSON)
+    def reads(json: JsValue): JsResult[PaymentDetail] = {
+      val id = (json \ "id").as[Long]
+      val CardNumber = (json \ "CardNumber").as[String]
+      val ExpiryDate = (json \ "ExpiryDate").as[String]
+      val CardHolderName = (json \ "CardHolderName").as[String]
+      val CSV = (json \ "CSV").as[String]
+      val CardType = (json \ "CardType").as[String]
+      val Account_id = (json \ "Account_id").as[Long]
+
+      JsSuccess(PaymentDetail(anorm.Id(id), CardNumber, ExpiryDate, CardHolderName, Some(CSV), CardType, Account_id ))
+    }
   }
 }

@@ -3,14 +3,39 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
+GET     /                                       controllers.Application.index
+GET /API/Test                                   controllers.API.TestAPI.index
 
-GET /API/Test                       controllers.API.TestAPI.index
 
+POST    /API/v1/Test                            controllers.API.TestAPI.insert(firstName,lastName,address)
 
-POST /API/v1/Test                   controllers.API.TestAPI.insert(firstName,lastName,address)
+GET     /API/v1/Accounts                        controllers.API.AccountAPI.getAll()
+GET     /API/v1/Account                         controllers.API.AccountAPI.getSingle(id: Long)
+POST    /API/v1/Account                         controllers.API.AccountAPI.insert(CompanyName:String)
+DELETE  /API/v1/Account                         controllers.API.AccountAPI.deleteSingle(id:Long)
+
+GET     /API/v1/Users                           controllers.API.UserAPI.getAll()
+GET     /API/v1/User                            controllers.API.UserAPI.getSingle(email: String)
+POST    /API/v1/User                            controllers.API.UserAPI.insert(EmailAddress:String,FirstName:String,LastName:String,JobTitle:String,Role:String,Account_id:Long,password:String)
+DELETE  /API/v1/Account                         controllers.API.UserAPI.deleteSingle(emailAddress:String)
+
+GET     /API/v1/Ads                             controllers.API.AdAPI.getAll()
+GET     /API/v1/Ad                              controllers.API.AdAPI.getSingle(id: Long)
+POST    /API/v1/Ad                              controllers.API.AdAPI.insert(Context:String,Title:String, Content:String, campaign_id:Long)
+DELETE  /API/v1/Ad                              controllers.API.AdAPI.deleteSingle(id:Long)
+
+GET     /API/v1/Campaigns                       controllers.API.CampaignAPI.getAll()
+GET     /API/v1/Campaign                        controllers.API.CampaignAPI.getSingle(id: Long)
+POST    /API/v1/Campaign                        controllers.API.CampaignAPI.insert(Name:String,Description:String,Account_id:Long)
+DELETE  /API/v1/Campaign                        controllers.API.CampaignAPI.deleteSingle(id:Long)
+
+GET     /API/v1/PaymentDetails                  controllers.API.PaymentDetailAPI.getAll()
+GET     /API/v1/PaymentDetail                   controllers.API.PaymentDetailAPI.getSingle(id: Long)
+POST    /API/v1/PaymentDetail                   controllers.API.PaymentDetailAPI.insert(CardNumber:String,ExpiryDate:String,CardHolderName:String,CSV:String,CardType:String,Account_id:Long)
+DELETE  /API/v1/PaymentDetail                   controllers.API.PaymentDetailAPI.deleteSingle(id:Long)
 
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
 
