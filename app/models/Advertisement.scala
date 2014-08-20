@@ -72,7 +72,7 @@ object Advertisement{
   def insert(advertisement: Advertisement):Option[Long] = {
     val id:Option[Long] = DB.withConnection { implicit connection =>
       SQL("insert into Advertisement(Context, Title, Content, Campaign_id) " +
-        "values(,{context},{title},{content},{campaign_id})").on(
+        "values({context},{title},{content},{campaign_id})").on(
           "context"       -> advertisement.Context,
           "title"         -> advertisement.Title,
           "content"       -> advertisement.Content,

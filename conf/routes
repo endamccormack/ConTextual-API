@@ -17,7 +17,7 @@ DELETE  /API/v1/Account                         controllers.API.AccountAPI.delet
 GET     /API/v1/Users                           controllers.API.UserAPI.getAll()
 GET     /API/v1/User                            controllers.API.UserAPI.getSingle(email: String)
 POST    /API/v1/User                            controllers.API.UserAPI.insert(EmailAddress:String,FirstName:String,LastName:String,JobTitle:String,Role:String,Account_id:Long,password:String)
-DELETE  /API/v1/Account                         controllers.API.UserAPI.deleteSingle(emailAddress:String)
+DELETE  /API/v1/User                            controllers.API.UserAPI.deleteSingle(emailAddress:String)
 
 GET     /API/v1/Ads                             controllers.API.AdAPI.getAll()
 GET     /API/v1/Ad                              controllers.API.AdAPI.getSingle(id: Long)
