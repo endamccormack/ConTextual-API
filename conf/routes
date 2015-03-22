@@ -34,6 +34,7 @@ GET     /API/v1/PaymentDetail                   controllers.API.PaymentDetailAPI
 POST    /API/v1/PaymentDetail                   controllers.API.PaymentDetailAPI.insert(CardNumber:String,ExpiryDate:String,CardHolderName:String,CSV:String,CardType:String,Account_id:Long)
 DELETE  /API/v1/PaymentDetail                   controllers.API.PaymentDetailAPI.deleteSingle(id:Long)
 
+GET     /API/v1/MapDetails                      controllers.API.MapDetailAPI.getAll()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
